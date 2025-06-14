@@ -1,0 +1,47 @@
+{
+  "name": "biz-analytics",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "seed": "ts-node scripts/seedGKG.ts"
+  },
+  "dependencies": {
+    "@google-cloud/bigquery": "^8.1.0",
+    "@google-cloud/vertexai": "^1.10.0",
+    "@heroicons/react": "^2.2.0",
+    "@langchain/google-vertexai": "^0.2.10",
+    "@langchain/mongodb": "^0.1.0",
+    "@types/csv-parse": "^1.1.12",
+    "@types/unzipper": "^0.10.11",
+    "csv-parse": "^5.6.0",
+    "csv-parser": "^3.2.0",
+    "echarts": "^5.6.0",
+    "langchain": "^0.3.28",
+    "mongodb": "^6.17.0",
+    "mongoose": "^8.15.1",
+    "next": "15.3.3",
+    "openai": "^5.3.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "recharts": "^2.15.3",
+    "unzipper": "^0.12.3"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "autoprefixer": "^10.0.0",
+    "eslint": "^9",
+    "eslint-config-next": "15.3.3",
+    "postcss": "^8.0.0",
+    "tailwindcss": "^3.0.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5"
+  }
+}
