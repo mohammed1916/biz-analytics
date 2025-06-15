@@ -1,14 +1,31 @@
-import { NextResponse } from "next/server";
+// pages/api/scan.ts
 
-export async function GET(req: Request) {
-  const url = req.url.split("=").pop();
-  if (!url) return NextResponse.json({ error: "Missing URL" }, { status: 400 });
+export default async function handler(req, res) {
+  const { url } = req.query;
 
-  const resp = await fetch(decodeURIComponent(url));
-  if (!resp.ok) return NextResponse.json({ error: "Fetch failed" }, { status: resp.status });
+  if (!url || typeof url !== 'string') {
+    return res.status(400).json({ error: 'Missing or invalid URL' });
+  }
 
-  const html = await resp.text();
-  const regex = /href="([^"]+\.(?:csv|zip))"/g;
-  const matches = Array.from(html.matchAll(regex), m => new URL(m[1], decodeURIComponent(url)).toString());
-  return NextResponse.json([...new Set(matches)]);
+  try {
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0', // spoof browser
+      },
+    });
+
+    if (!response.ok) {
+      return res.status(response.status).json({ error: 'Failed to fetch target URL' });
+    }
+
+    const html = await response.text();
+
+    const links = [...html.matchAll(/href="([^"]+\.gkg\.csv\.zip)"/g)]
+      .map((match) => new URL(match[1], url).href);
+
+    return res.status(200).json(links);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
 }

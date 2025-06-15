@@ -1,35 +1,29 @@
-import { NextResponse } from "next/server";
-import { MongoClient } from "mongodb";
-import fetch from "node-fetch";
-import unzipper from "unzipper";
-import csv from "csv-parser";
-
-const client = new MongoClient(process.env.MONGODB_URI!);
-
-export async function POST(req: Request) {
-  const { url } = await req.json();
-  await client.connect();
-  const db = client.db("business_analytics");
-  const col = db.collection("analytics");
-
-  const resp = await fetch(url);
-  if (!resp.ok) return NextResponse.json({}, { status: resp.status });
-
-  let stream = resp.body;
-  if (url.endsWith(".zip")) {
-    stream = resp.body.pipe(unzipper.ParseOne());
+// pages/api/fetchfile.ts
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST');
+    return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  const rows: any[] = [];
-  await new Promise<void>((resolve, reject) => {
-    stream
-      .pipe(csv({ separator: "\t", skipLines: 0 }))
-      .on("data", (r) => rows.push(r))
-      .on("end", resolve)
-      .on("error", reject);
-  });
+  const { url } = req.body;
+  if (!url || typeof url !== 'string') {
+    return res.status(400).json({ error: 'Invalid URL' });
+  }
 
-  if (rows.length) await col.insertMany(rows);
-  await client.close();
-  return NextResponse.json({ insertedCount: rows.length });
+  try {
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0',
+      },
+    });
+
+    if (!response.ok) {
+      return res.status(response.status).json({ error: 'Failed to fetch file' });
+    }
+
+    const buffer = await response.arrayBuffer();
+    return res.status(200).json({ message: 'Fetched', size: buffer.byteLength });
+  } catch (err) {
+    return res.status(500).json({ error: 'Internal error' });
+  }
 }
