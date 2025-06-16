@@ -4,7 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 interface ListingData {
-  [key: string]: any;
+  [key: string]: undefined;
 }
 
 export default function OverviewClient() {

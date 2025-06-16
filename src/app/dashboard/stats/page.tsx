@@ -48,7 +48,7 @@ export default async function StatsPage() {
 }
 
 // Recursively calculate object depth
-function getObjectDepth(obj: any, level = 0): number {
+function getObjectDepth(obj: unknown, level = 0): number {
   if (obj === null || typeof obj !== 'object') return level;
   return Math.max(level, ...Object.values(obj).map(v => getObjectDepth(v, level + 1)));
 }

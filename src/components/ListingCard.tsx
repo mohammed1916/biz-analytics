@@ -1,7 +1,7 @@
 // components/ListingCard.tsx
 import React from 'react';
 
-export default function ListingCard({ data }: { data: any }) {
+export default function ListingCard({ data }: { data:  { name: string; description: string; price: number } }) {
   return (
     <div className="border p-4 rounded shadow">
       <h2 className="text-xl font-semibold">{data.name}</h2>
